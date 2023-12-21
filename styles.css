@@ -1,0 +1,13 @@
+.canvas-section{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#canvas{
+   
+   background-color: rgb(208, 223, 211); 
+
+}

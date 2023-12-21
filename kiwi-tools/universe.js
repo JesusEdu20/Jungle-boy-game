@@ -362,7 +362,8 @@ import { Character } from "./character.js"
                     const grid=this.createGrid(frame, rows, cols, spriteSheet);
                     frame.grid=grid;
                     this.renderGrid(grid)
-                    this.orderGridRandom(rows, cols, grid, [1, 0])
+                    this.invertRandomOrder(grid)
+                    this.orderGridRandom(rows, cols, grid, [0, 0])
 
                     
                     frame.isShadow=true;
@@ -430,15 +431,13 @@ import { Character } from "./character.js"
         orderGridRandom(rows, cols, area, spacing){
 
             const sequence = this.getRandomSequence(rows, cols, spacing)
-            console.log(sequence)
-            
-         
+
                 for (let i = 1; i <= rows; i++) {
                     for (let j = 1; j <= cols; j++) {
                         if (i % sequence.rows === 0 && j % sequence.cols === 0) {
                             //convertir en sombra todos los elementos que hayan obtenido un residuo 0
-                            area[i - 1][j - 1].hitBox = undefined;
-                            area[i - 1][j - 1].isShadow = true;
+                            area[i - 1][j - 1].hitBox = area[i - 1][j - 1].hitBoxCopy;
+                            area[i - 1][j - 1].isShadow = false;
                         }
                     }
                 }
@@ -447,14 +446,14 @@ import { Character } from "./character.js"
         } 
 
         invertRandomOrder(grid){
-        
+            
                 for (let i = 0; i < grid.length; i++) {
                   const row = grid[i];
                   for (let j = 0; j < row.length; j++) {
                     const object = row[j];
-                    if (object.isShadow === true) {
-                      object.hitBox = object.hitBoxCopy;
-                      object.isShadow = false;
+                    if (object.isShadow === false) {
+                      object.hitBox = undefined;    
+                      object.isShadow = true;
                     }
                   }
                 }

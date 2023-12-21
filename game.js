@@ -404,14 +404,12 @@ frame.behaviorStack.push((frame)=>{
         
         frame.position.x = world.canvas.width
         world.invertRandomOrder(frame.grid)
-        world.orderGridRandom(frame.rows, frame.cols, frame.grid, [1 , 0])
-
+        world.orderGridRandom(frame.rows, frame.cols, frame.grid, [0 , 0])
 
          frame.grid.forEach(row => {
             
             row.forEach((elem, index)=>{
                 elem.position.x = (index * elem.width) + world.canvas.width
-               
                 
             })
         }); 
@@ -423,38 +421,9 @@ frame.behaviorStack.push((frame)=>{
 
 
 
-/* world.renderRandomObjectsOnCanvas(100, 60, obRock.nickName, 0, 200, null, {cols: 2, rows: 2}) */
-/* const obRockGroup=world.renderRandomObjectsOnCanvas(100, 50, obRock.nickName, 0, 300, null, {cols: 2, rows: 1})
- */
-
-/* world.group(obRock, 100, 100) */
-
-/* OJO ACA FUE DONDE LO DEJASTE */
-/* const obRockGroup= world.createSuperGroupObjects(100, 100, obRock, {cols:2, rows:2})
-
-obRockGroup.render(obRockGroup.width,0)
-
- */
-
-/* obRockGroup.selectArea(0, (elem=>{
-   
-    elem.speedX=-2
-    
-}))
- */
-
-/* obRockGroup.selectArea(1, (elem=>{
-   
-    elem.speedX=-2
-    
-})) */
 
 
 
-
-
-/* world.renderRandomObjectsOnCanvas(100, 100, obRock.nickName, 0, 0, null, {cols: 2, rows: 2})
- */
 const controlsOfPlayer = new Control(player);
 controlsOfPlayer.hookCharacter("idle", false)
 player.configHitbox({positionX:40, positionY:30, width:76, height:140, border:0, color:"red", type:"player"})

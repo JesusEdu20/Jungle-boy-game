@@ -158,6 +158,9 @@
 }
 
 @media(min-width: 768px){
+    #smartphone-controls{
+        display: none;
+    }
     .control-btn{
         display: none;
     }

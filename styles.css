@@ -9,6 +9,7 @@
 #canvas{
    
    background-color: rgb(208, 223, 211); 
+   min-width: 320px;
 
 }
 
@@ -37,34 +38,37 @@
 
 
 #menu{
-
+    
     display: flex;
     justify-content: center;
     align-items: end;
     position: absolute;
-    width: 200px;
-    height: 200px;
-    /* background-color: #3a9936; */
+    min-width: 320px;
+    
     
 }
 
 #letrero{
+
     width: 100%;
     height: 100%;
+    min-width: 320px;
     background: url("./game-assets/menu-3d.png");
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    cursor:  pointer;
+    cursor:  pointer;   
 }
 
 #letrero p{
+   
     color: white;
     font-family: Poppins, sans-serif;
     text-align: center;
     animation-name: pulse;
     animation-duration: 1s;
     animation-iteration-count: infinite;
+    min-width: 320px;
 }
 
 .letreroToUp{
@@ -93,6 +97,17 @@
     border-bottom: 2px solid white;
     color: rgb(201, 196, 196);
 }
+
+
+#smartphone-controls{
+    position: absolute;
+    width: 100%;
+    height: 100px;
+    background-color: #968d8d;
+    opacity: 0.5;
+}
+
+
 
 @keyframes spin {
     0% { transform: rotate(0deg); }

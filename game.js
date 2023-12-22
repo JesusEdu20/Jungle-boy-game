@@ -90,7 +90,7 @@ const recordContainer = document.getElementById("player-record")
 function actualizarPuntaje(nuevoPuntaje, recordContainer) {
   const puntajeActual = localStorage.getItem('puntaje');
   const puntajeFormateado = puntajeActual ? puntajeActual : PLAYER_RECORD; // Si no hay puntaje actual, usar el formato base
-    console.log(puntajeActual)
+ 
 
   // Convertir a número y comparar
   const puntajeNumerico = parseInt(puntajeFormateado);
@@ -100,8 +100,7 @@ function actualizarPuntaje(nuevoPuntaje, recordContainer) {
     const nuevoPuntajeFormateado = nuevoPuntajeNumerico.toString().padStart(PLAYER_RECORD.length, '0'); // Asegurar que tenga la longitud necesaria
     localStorage.setItem('puntaje', nuevoPuntajeFormateado); // Actualizar el puntaje en localStorage
     recordContainer.innerHTML=nuevoPuntajeFormateado
-    return true; // Indica que se ha actualizado el récord
-    
+    return true; // Indica que se ha actualizado el récord 
   }
 
   recordContainer.innerHTML=puntajeActual
@@ -442,26 +441,33 @@ reel.renderFrame(frame)
 //activando el renderizado aleatorio infinito
 frame.behaviorStack.push((frame)=>{
     
-    if(frame.position.x < - world.canvas.width){
+        if(frame.position.x < - world.canvas.width){
 
-        tempProgress+=10;
-        frame.speedX-=1
-        
-        actualizarPuntaje(tempProgress, recordContainer)
-        
-        frame.position.x = world.canvas.width
-        world.invertRandomOrder(frame.grid)
-        world.orderGridRandom(frame.rows, frame.cols, frame.grid, [1 , 0])
-
-         frame.grid.forEach( row => {
+            if(presentation.classList.contains("letreroToUp")){
+                
+                tempProgress+=10;
+                frame.speedX-=1
+            }
+             
+            actualizarPuntaje(tempProgress, recordContainer)
             
-            row.forEach((elem, index)=>{
-                elem.position.x = (index * elem.width) + world.canvas.width
-                elem.speedX-=1
-            })
-        }); 
-        
-    }
+            frame.position.x = world.canvas.width
+            world.invertRandomOrder(frame.grid)
+            world.orderGridRandom(frame.rows, frame.cols, frame.grid, [1 , 0])
+
+            frame.grid.forEach( row => {
+                
+                row.forEach((elem, index)=>{
+                    elem.position.x = (index * elem.width) + world.canvas.width
+
+                    if(presentation.classList.contains("letreroToUp")){
+                        elem.speedX-=1
+                    }
+                    
+                })
+            }); 
+            
+        }
 })
 
 

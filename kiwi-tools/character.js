@@ -63,7 +63,7 @@ export class Character {
         this.cancelEvent = cancelEvent;
         this.isAutoOffAnimation = isAutoOffAnimation;
         this.frameCoordinates = frameCoordinates;
-        this.controls = controls;
+        this.controls = controls ||  undefined;
         this.universe = universe;
         this.frame = 0;
         this.hitBox = undefined;

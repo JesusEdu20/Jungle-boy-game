@@ -6,6 +6,7 @@ import { Character } from "./character.js"
 
             this.stackAnimations=[];
             this.canvas=canvas;
+            this.menu = undefined;
             this.ctx=this.canvas.getContext("2d");
             this.physics = {gravity:1.0000002};
             this.maps={};
@@ -169,7 +170,6 @@ import { Character } from "./character.js"
                                 && player.hitBox.x < obstacle.hitBox.x + obstacle.hitBox.width){
                                  
                                 player.speedX=0;
-                                
                                 player.position.x= (obstacle.hitBox.x + (player.position.x - player.hitBox.x )) - player.hitBox.width
                                 
                                
@@ -207,14 +207,17 @@ import { Character } from "./character.js"
             
         }
 
-        setCanvasSize = (element, decimalPercentage) => {
+        setCanvasSize = (element, decimalPercentage, menu) => {
 
              // Comprueba si el ancho de la ventana es mayor que su altura
-            let elementSize= window.innerWidth> window.innerHeight? window.innerHeight : window.innerWidth;
+            let elementSize= window.innerWidth > window.innerHeight? window.innerHeight : window.innerWidth;
            
             // Ajusta el ancho y el alto del elemento en función del porcentaje decimal
             element.style.width = `${elementSize * (decimalPercentage / 100)}px`;
             element.style.height = `${elementSize * (decimalPercentage / 100)}px`;
+
+            menu.style.width = `${elementSize * (decimalPercentage / 100)}px`;
+            menu.style.height = `${elementSize * (decimalPercentage / 100)}px`;
 
             
         }
@@ -224,12 +227,12 @@ import { Character } from "./character.js"
              //* / Agrega un evento de escucha al objeto window para detectar cambios en el tamaño de la ventana
              window.addEventListener("resize", () => {
                 // Cuando ocurre el evento "resize", llama a la función setElementSize para ajustar el tamaño del canvas al 70% de la ventana
-                this.setCanvasSize(this.canvas, decimalPercentage);
+                this.setCanvasSize(this.canvas, decimalPercentage, menu);
             });
             
             window.addEventListener("load", () => {
                 // Cuando ocurre el evento "resize", llama a la función setElementSize para ajustar el tamaño del canvas al 70% de la ventana
-                this.setCanvasSize(this.canvas, decimalPercentage);
+                this.setCanvasSize(this.canvas, decimalPercentage, menu);
             });
         }
 
@@ -278,7 +281,6 @@ import { Character } from "./character.js"
 
         createReel(objectModel){
 
-            const collection=[]
             const reel={
 
                 createFrame: (widthRange, heightRange) => {
@@ -303,8 +305,8 @@ import { Character } from "./character.js"
                         type: objectModel.type}
                     )
 
-                    frame.hitBox=objectModel.hitBox
-                    frame.nickName=objectModel.nickName 
+                    frame.hitBox = objectModel.hitBox
+                    frame.nickName = objectModel.nickName 
 
                     if(this.stackCopiedModelObjects[objectModel.nickName]){
                         //asignar
@@ -323,12 +325,13 @@ import { Character } from "./character.js"
                     const cols =  Math.floor(((widthRange / 100) * this.canvas.width ) / object.width) ;
                     const rows = Math.floor(((heightRange / 100) * this.canvas.height) / object.height) ; 
 
+                    //Posicionan el frame en los puntos (0, 0) del canvas
                     object.position.x=0;
                     object.position.y=0;
                     
-
+                    //adaptan el frame al tamano del array2d
                     object.width = cols * object.width;
-                    object.height = rows * object.height;
+                    object.height = rows * object.height; 
 
                     //convertir a sombra
                     const spriteSheet= object.spriteSheet;
@@ -378,54 +381,67 @@ import { Character } from "./character.js"
             
         }
 
+        
         createGrid(object, rows, cols, spriteSheet){
             
             const grid=[]
-            
-            for(let i = 0; i < rows ; i++ ){
 
-                const arr = []
-                
-                for (let j = 0; j < cols; j++){
+            try{
 
-                    const copyObject = new Character( {
-                        
-                        speedX:object.speedX,
-                        speedY:object.speedY,
-                        spriteSheet: spriteSheet,
-                        frameWidth: object.frameWidth,
-                        frameHeight: object.frameHeight,
-
-                        staggerFrames: object.staggerFrames, 
-                        animationName: object.animationName,
-                        frameCoordinates: object.frameCoordinates,
-
-                        universe:object.universe,
-                        width: 200,
-                        height: 200,
-                        positionX: (j * 200) + object.position.x,
-                        positionY: (i * 200) + object.position.y,
-                        type: object.type
-
-                        }
-                    )
-
-
-                    copyObject.configHitbox({positionX:object.hitBox.positionX, positionY:object.hitBox.positionY, width:object.hitBox.width, height:object.hitBox.height, border: object.hitBox.border, color: object.hitBox.color, type: object.hitBox.type})
-                    copyObject.hitBoxCopy=copyObject.hitBox;
-                    copyObject.nickName =`${object.nickName}-${"copy"}`
-                    console.log(object.nickName)
-                    copyObject.isVisibleHitbox=false
-                    
-                    
-                   
-                   arr.push(copyObject)
+                if(object.hitBox===undefined){
+                    throw new Error(`This object does not have a defined hitbox`)
                 }
                 
-                grid.push(arr)
-            }  
+                for(let i = 0; i < rows ; i++ ){
+
+                    const arr = []
+                    
+                    for (let j = 0; j < cols; j++){
+
+                        const copyObject = new Character( {
+                            
+                            speedX:object.speedX,
+                            speedY:object.speedY,
+                            spriteSheet: spriteSheet,
+                            frameWidth: object.frameWidth,
+                            frameHeight: object.frameHeight,
+
+                            staggerFrames: object.staggerFrames, 
+                            animationName: object.animationName,
+                            frameCoordinates: object.frameCoordinates,
+
+                            universe:object.universe,
+                            width: 100,
+                            height: 100,
+                            positionX: (j * 100) + object.position.x,
+                            positionY: (i * 100) + object.position.y,
+                            type: object.type
+
+                            }
+                        )
+
+                        copyObject.isLoopAnimation = true;
+                        copyObject.configHitbox({positionX:object.hitBox.positionX, positionY:object.hitBox.positionY, width:object.hitBox.width, height:object.hitBox.height, border: object.hitBox.border, color: object.hitBox.color, type: object.hitBox.type})
+                        copyObject.hitBoxCopy=copyObject.hitBox;
+                        copyObject.nickName =`${object.nickName}-${"copy"}`
+                        console.log(object.nickName)
+                        copyObject.isVisibleHitbox=false
+
+                    
+                    arr.push(copyObject)
+                    }
+                    
+                    grid.push(arr)
+                }  
+
+            }
+
+            catch(error){
+                console.error(error)
+            }
 
             return grid
+            
         }
 
         orderGridRandom(rows, cols, area, spacing){

@@ -6,8 +6,12 @@ import { Universe } from "./kiwi-tools/universe.js"
 
 // Canvas config
 const canvas = document.getElementById("canvas");
+const presentation = document.getElementById("letrero");
 const world = new Universe(canvas);
+world.menu = document.getElementById("menu");
 world.activeCanvasResponsive(90);
+
+
 
 // SpriteSheets
 const spriteSheetPlayer = new Image();
@@ -22,26 +26,24 @@ spriteSheetOb.src = "./game-assets/sprite-sheets/bg/ob1.png";
 const spriteSheetTrees = new Image();
 spriteSheetTrees.src = "./game-assets/sprite-sheets/bg/tree.png"
 
-const spriteSheetObRock = new Image();
-spriteSheetObRock.src = "./game-assets/sprite-sheets/bg/rock.png";
+const spriteSheetBee = new Image();
+spriteSheetBee.src = "./game-assets/sprite-sheets/enemy/bee/bee.png";
 
 
-/* const enemy = new Image();
-enemy.src = "./game-assets/sprite-sheets/enemy/snail/snail_00.png"
+/* ENEMY */
 
- */
+const spriteSheetEgg = new Image();
+spriteSheetEgg.src = "./game-assets/sprite-sheets/enemy/angry-egg/1x/enemy-egg.png";
+
+
 
 // Mapeo de spriteheets para obtener los frames
 const playerFrames = world.mapFrames({name:"dizzy", frames:2}, {name: "faint", frames:3}, {name:"idle", frames: 2}, {name: "run", frames: 4},{name: "jump-fall", frames:1}, {name:"jump-up", frames: 1}, {name:"sliding", frames:1}, {dimensions: {width: 531, height:  592}});
 
 const bgFrames = world.mapFrames({name:"bg", frames:1}, {dimensions:{width:800, height:400}})
 const bgTreeFrames = world.mapFrames({name:"bg", frames:1}, {dimensions:{width:801, height:401}})
-const bgRockFrames = world.mapFrames({name:"ob", frames:1}, {dimensions:{width:167, height: 142}})
+const beeFrames = world.mapFrames({name:"ob", frames: 13}, {dimensions:{width:273, height: 282}})
 const obFrames = world.mapFrames({name:"ob", frames:1}, {dimensions:{width:529, height:284}})
-
-
-
-
 
 
 
@@ -56,7 +58,7 @@ const playerControls = {
         endAnimation: "jump-fall",
         endEvent: "keyup",
         endLoop: false,
-        displacementPhysics:{speedX:1, speedY:-20}
+        displacementPhysics:{speedX:0, speedY:-20}
     },
     d: {
         startAnimation:"run",
@@ -65,7 +67,7 @@ const playerControls = {
         endAnimation: "idle",
         endEvent: "keyup",
         endLoop: true,
-        displacementPhysics:{speedX:2, speedY:0}
+        displacementPhysics:{speedX:0, speedY:0}
     },
     a: {
         startAnimation: "sliding",
@@ -77,6 +79,34 @@ const playerControls = {
         displacementPhysics:{speedX:0, speedY:0}
     },
 };
+
+/* RECORD DEL JUGADOR/ LOCAL STORAGE*/ 
+let tempProgress = 0
+const PLAYER_RECORD = "000000000"; // formato base del récord
+const recordContainer = document.getElementById("player-record")
+
+
+
+function actualizarPuntaje(nuevoPuntaje, recordContainer) {
+  const puntajeActual = localStorage.getItem('puntaje');
+  const puntajeFormateado = puntajeActual ? puntajeActual : PLAYER_RECORD; // Si no hay puntaje actual, usar el formato base
+    console.log(puntajeActual)
+
+  // Convertir a número y comparar
+  const puntajeNumerico = parseInt(puntajeFormateado);
+  const nuevoPuntajeNumerico = parseInt(nuevoPuntaje);
+
+  if (nuevoPuntajeNumerico > puntajeNumerico) {
+    const nuevoPuntajeFormateado = nuevoPuntajeNumerico.toString().padStart(PLAYER_RECORD.length, '0'); // Asegurar que tenga la longitud necesaria
+    localStorage.setItem('puntaje', nuevoPuntajeFormateado); // Actualizar el puntaje en localStorage
+    recordContainer.innerHTML=nuevoPuntajeFormateado
+    return true; // Indica que se ha actualizado el récord
+    
+  }
+
+  recordContainer.innerHTML=puntajeActual
+  return false; // No se actualizó el récord
+}
 
 
 
@@ -103,10 +133,13 @@ const player= new Character({
     universe: world, 
     width: 150, 
     height: 200,
-    positionX:0,
+    positionX:65,
+    /* positionY: */
     type:"player"
 
 })
+
+
 
 
 
@@ -222,29 +255,31 @@ const ob = new Character({
     
 })
 
-const obRock = new Character({
+const bee = new Character({
 
     speedX:0,
     speedY:0,
-    spriteSheet: spriteSheetObRock,
-    frameWidth: 167,
-    frameHeight: 142,
+    spriteSheet: spriteSheetBee,
+    frameWidth: 273,
+    frameHeight: 282,
 
     staggerFrames: 5, 
     animationName: "ob",
-    frameCoordinates: bgRockFrames,
+    frameCoordinates: beeFrames,
 
     universe:world,
-    width: 200,
-    height: 200,
+    width: 100,
+    height: 100,
     positionX: 400,
     positionY: 390,
-    type: "map"
+    type: "enemy"
     
 })
 
 
-obRock.nickName="obRock"
+bee.nickName="obBee"
+bee.isLoopAnimation = true
+
 
 
 
@@ -256,9 +291,7 @@ obRock.nickName="obRock"
 
 bg.behaviorStack.push((request)=>{
 
-   
-   
-    
+
     const player=request.universe.stackAnimations.filter(animation=>{
 
         return animation.type=="player"
@@ -281,10 +314,8 @@ bg.behaviorStack.push((request)=>{
 
         if(bgTwo.position.x < -1000){
             bgTwo.position.x = 1000  + bgTwo.speedX
-
             
         }
-
         
     }
      
@@ -347,15 +378,11 @@ bgTrees.behaviorStack.push((request)=>{
         return animation.type=="player"
     })
 
-    const obRock=request.universe.stackAnimations.find(animation=>{
-
-        return animation.nickName==="obRock"
-    })
-
    
     if(player[0].animationName==="run"){
 
         request.speedX=-2;
+        
 
         if(request.position.x < - 800){
             request.position.x = 800 + request.speedX        
@@ -364,53 +391,73 @@ bgTrees.behaviorStack.push((request)=>{
     }
      
 }) 
+
+player.behaviorStack.push(request=>{
+    
+    if(request.position.y > world.canvas.height){
+        console.log("cayendo")
+        world.stackAnimations=[]
+        presentation.classList.remove("letreroToUp")
+        presentation.classList.add("letreroToBottom")
+        soundtrack.pause()
+    }
+})
+
  
+/* MUSICA */
+
+const soundtrack = new Audio("./soundtrack/carrapicho-nojodas.mp3");
+soundtrack.loop=true
+soundtrack.volume=0.5;
 
 
-
+function initGameData(){
+    
 /* CARGA/CONF DE RECURSOS */
 
 ob.configHitbox({positionX:0, positionY:world.canvas.height - 540, width:590, height:200, border:4, color:"blue", type:"map"})
 ob.isVisibleHitbox=false;
 
 
-obRock.configHitbox({positionX:10, positionY:50, width:148, height:80, border:4, color:"blue", type:"map"})
-obRock.isVisibleHitbox=true;
-/*   */
-
-/* Seguir aca */
+bee.configHitbox({positionX:10, positionY:30, width:80, height:58, border:4, color:"blue", type:"map"})
+bee.isVisibleHitbox = true;
 
 
 /* NIVELES */
-world.maps.levelOne=[bg, bgTwo, bgTrees, bgTreesTwo, ob, obRock]
+world.maps.levelOne=[bg, bgTwo, bgTrees, bgTreesTwo, ob, bee]
 world.playMap("levelOne")
 
-
-
 //Creacion de reels
-const test = world.createReel(obRock)
-const frame=test.createFrame(100, 100)
+const reel = world.createReel(bee)
+const frame = reel.createFrame(80, 80)
+
 frame.position.x=world.canvas.width
-frame.speedX=-2
+frame.speedX= -4
 
-//render de frames
-test.renderFrame(frame)
+frame.isLoopAnimation = true;
 
+//render de frame
+reel.renderFrame(frame) 
 
 //activando el renderizado aleatorio infinito
 frame.behaviorStack.push((frame)=>{
     
     if(frame.position.x < - world.canvas.width){
+
+        tempProgress+=10;
+        frame.speedX-=1
+        
+        actualizarPuntaje(tempProgress, recordContainer)
         
         frame.position.x = world.canvas.width
         world.invertRandomOrder(frame.grid)
-        world.orderGridRandom(frame.rows, frame.cols, frame.grid, [0 , 0])
+        world.orderGridRandom(frame.rows, frame.cols, frame.grid, [1 , 0])
 
-         frame.grid.forEach(row => {
+         frame.grid.forEach( row => {
             
             row.forEach((elem, index)=>{
                 elem.position.x = (index * elem.width) + world.canvas.width
-                
+                elem.speedX-=1
             })
         }); 
         
@@ -423,24 +470,71 @@ frame.behaviorStack.push((frame)=>{
 
 
 
+frame.grid.forEach((row)=>{
+    row.forEach(bee=>{
+        bee.collisionActionStack.push((elem)=>{
+            world.stackAnimations=[]
+            presentation.classList.remove("letreroToUp")
+            presentation.classList.add("letreroToBottom")
+            soundtrack.pause()
+        })
+    })
+})
+
 
 const controlsOfPlayer = new Control(player);
 controlsOfPlayer.hookCharacter("idle", false)
-player.configHitbox({positionX:40, positionY:30, width:76, height:140, border:0, color:"red", type:"player"})
 
 
 
+}
+
+initGameData()
+
+
+window.addEventListener('load', function() {
+    
+    const preload = document.getElementById('preload');
+    
+
+    /* setTimeout(function() { */
+        preload.style.display = 'none'; 
+        canvas.style.display = 'block'; 
+        world.drawSprites()
+        
+    /* }, 5000) */
+
+});
 
 /* INICIO DEL JUEGO */
-
-console.log(world.stackAnimations)
-world.drawSprites()
+window.addEventListener("keydown", (e)=>{
 
 
-const soundtrack = new Audio("./soundtrack/carrapicho-nojodas.mp3");
-soundtrack.loop=true
-soundtrack.volume=0.5;
-window.addEventListener("keydown", ()=>{
-    soundtrack.play()
+    if(e.code=="Space"){
 
+         if(presentation.classList.contains('letreroToBottom')){
+            player.position.x=60
+            player.position.y=0
+            ob.position.x=0
+
+            tempProgress=0
+            initGameData()
+            presentation.classList.remove("letreroToBottom")
+        }
+       
+        presentation.classList.add("letreroToUp")
+        /* presentation.style.display="none" */
+        
+        soundtrack.play()
+        player.configHitbox({positionX:40, positionY:30, width:76, height:140, border:0, color:"red", type:"player"})
+
+       
+    }   
+    
 })
+
+
+
+
+
+

@@ -99,15 +99,72 @@
 }
 
 
+/* CONTROLS TO SMARTPHONES */
+/* ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 #smartphone-controls{
+    display: flex;
+    justify-content: center;
     position: absolute;
+    
     width: 100%;
     height: 100px;
     background-color: #968d8d;
     opacity: 0.5;
 }
+.control-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    background-color: rgb(113, 116, 116);
+    border-radius: 60px;
+}
+#jump{
+   
+    bottom: -70px;
+    width: 80px;
+    height: 80px;
+    margin: 5px 0 0;
+}
+#jump p{
+    font-family: Poppins, sans-serif;
+    color: #fff;
+}
+#run{
+   
+    right: 48px;
+    bottom: -90px;
+    width: 70px;
+    height: 70px;
+   
+    margin: 5px 0 0;
+}
+#run p{
+    font-family: Poppins, sans-serif;
+    color: #fff;
+}
+#space{
+  
+    left: 48px;
+    bottom: -90px;
+    width: 70px;
+    height: 70px;
+    margin: 5px 0 0;
+}
 
+#space p{
+    font-family: Poppins, sans-serif;
+    color: #fff;
+}
 
+@media(min-width: 768px){
+    .control-btn{
+        display: none;
+    }
+}
+/* //////////////////////////////////////////////////////////////////////////////////////////////////////////// */
+
+/* ANIMACIONES */
 
 @keyframes spin {
     0% { transform: rotate(0deg); }

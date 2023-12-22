@@ -539,6 +539,29 @@ window.addEventListener("keydown", (e)=>{
     
 })
 
+const spaceButton = document.getElementById("space")
+/* SMARTPHONES */
+
+spaceButton.addEventListener("click", (e)=>{
+        
+         if(presentation.classList.contains('letreroToBottom')){
+            player.position.x=60
+            player.position.y=0
+            ob.position.x=0
+
+            tempProgress=0
+            initGameData()
+            presentation.classList.remove("letreroToBottom")
+        }
+       
+        presentation.classList.add("letreroToUp")
+        /* presentation.style.display="none" */
+        
+        soundtrack.play()
+        player.configHitbox({positionX:40, positionY:30, width:76, height:140, border:0, color:"red", type:"player"}) 
+    
+})
+
 
 
 

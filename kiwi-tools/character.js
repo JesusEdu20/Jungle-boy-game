@@ -82,7 +82,7 @@ export class Character {
                 endAnimation: "jump-fall",
                 endEvent: "keyup",
                 endLoop: false,
-                displacementPhysics:{speedX:0, speedY:-20}
+                displacementPhysics:{speedX:-2, speedY:-20}
             },
             d: {
                 startAnimation:"run",

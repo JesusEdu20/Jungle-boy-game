@@ -354,7 +354,7 @@ bgTrees.behaviorStack.push((request)=>{
         return animation.nickName === "bgTwoThree"
     })
 
-    if(player[0].animationName==="run"){
+    if(player[0].animationName==="run" || player[0].animationName==="sliding" ){
 
         request.speedX=-6;
         bgTwo.speedX=-6;
@@ -402,12 +402,16 @@ bgTrees.behaviorStack.push((request)=>{
 
 player.behaviorStack.push(request=>{
     
-    if(request.position.y > world.canvas.height){
-        console.log("cayendo")
+    if(request.position.y > world.canvas.height || request.position.x >  world.canvas.width){
+        
         world.stackAnimations=[]
         presentation.classList.remove("letreroToUp")
         presentation.classList.add("letreroToBottom")
         soundtrack.pause()
+    }
+
+    if(request.position.x < 10  && request.animationName!=="sliding"){
+        request.speedX=0
     }
 
 })
@@ -464,7 +468,7 @@ frame.behaviorStack.push((frame)=>{
             
             frame.position.x = world.canvas.width
             world.invertRandomOrder(frame.grid)
-            world.orderGridRandom(frame.rows, frame.cols, frame.grid, [1 , 0])
+            world.orderGridRandom(frame.rows, frame.cols, frame.grid, [2 , 1])
 
             frame.grid.forEach( row => {
                 
@@ -480,10 +484,6 @@ frame.behaviorStack.push((frame)=>{
             
         }
 })
-
-
-
-
 
 
 

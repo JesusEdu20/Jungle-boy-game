@@ -146,13 +146,9 @@ import { Character } from "./character.js"
                                     
                                     && player.hitBox.x + player.hitBox.width > obstacle.hitBox.x
                                     && player.hitBox.x < obstacle.hitBox.x + obstacle.hitBox.width){
-
-                                        console.log("aterrizaje perfecto")
                                         player.speedY=0;
                                 }     
                             }
-
-                            
 
                         } else {
 
@@ -366,7 +362,7 @@ import { Character } from "./character.js"
                     frame.grid=grid;
                     this.renderGrid(grid)
                     this.invertRandomOrder(grid)
-                    this.orderGridRandom(rows, cols, grid, [0, 0])
+                    this.orderGridRandom(rows, cols, grid, [2, 1])
 
                     
                     frame.isShadow=true;

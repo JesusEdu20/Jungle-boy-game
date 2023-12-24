@@ -424,7 +424,7 @@ import { Character } from "./character.js"
                         copyObject.configHitbox({positionX:object.hitBox.positionX, positionY:object.hitBox.positionY, width:object.hitBox.width, height:object.hitBox.height, border: object.hitBox.border, color: object.hitBox.color, type: object.hitBox.type})
                         copyObject.hitBoxCopy=copyObject.hitBox;
                         copyObject.nickName =`${object.nickName}-${"copy"}`
-                        console.log(object.nickName)
+                       
                         copyObject.isVisibleHitbox=false
 
                     

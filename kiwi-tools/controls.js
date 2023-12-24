@@ -25,18 +25,23 @@ export class Control{
             const endEvent=config.endEvent;
             const isLoopEndAnimation=config.endLoop;
             const displacementPhysics=config.displacementPhysics
+            const obj = config.addListenerToObject || window
+            
+            console.log( control.substring(0, 3))
 
-            window.addEventListener(startEvent, (e)=>{
+            obj.addEventListener(startEvent, (e)=>{
+
+               
                 
                 isDisplayed=this.character.spriteSheet.getAttribute("isDisplayed")==="true"? true : false;
                 
                 if(!isDisplayed){
-
-                    if(e.key===control){
-
+                    
+                    if(e.key===control || control.substring(0, 3) === "btn"){
+                        
                         /*Change animation when object(Character) startEvent*/
 
-                        this.character.frame=0;
+                        this.character.frame = 0;
                         this.character.animationName = startAnimation;
                         this.character.isLoopAnimation = isLoopStartAnimation;
                         
@@ -50,12 +55,12 @@ export class Control{
                 }
             })
 
-            window.addEventListener(endEvent, (e)=>{
+            obj.addEventListener(endEvent, (e)=>{
                 
                 isDisplayed=this.character.spriteSheet.getAttribute("isDisplayed")==="true"? true : false;
 
                 if(isDisplayed){
-                    if(e.key===control){
+                    if(e.key===control || control.substring(0, 3) === "btn"){
 
                        /*Change animation when object(Character) endEvent*/
                        

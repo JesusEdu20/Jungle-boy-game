@@ -11,7 +11,11 @@ const world = new Universe(canvas);
 world.menu = document.getElementById("menu");
 world.activeCanvasResponsive(90);
 
-
+//BTNS
+const spaceButton = document.getElementById("space")
+const jumpButton = document.getElementById("jump")
+const runButton = document.getElementById("run")
+const slidingButton = document.getElementById("sliding")
 
 // SpriteSheets
 const spriteSheetPlayer = new Image();
@@ -47,38 +51,8 @@ const obFrames = world.mapFrames({name:"ob", frames:1}, {dimensions:{width:529, 
 
 
 
-/* CONTROLES */
 
-const playerControls = {
 
-    w: {
-        startAnimation:"jump-up",
-        startEvent: "keydown",
-        startLoop: false,
-        endAnimation: "jump-fall",
-        endEvent: "keyup",
-        endLoop: false,
-        displacementPhysics:{speedX:0, speedY:-20}
-    },
-    d: {
-        startAnimation:"run",
-        startEvent: "keydown",
-        startLoop: true,
-        endAnimation: "idle",
-        endEvent: "keyup",
-        endLoop: true,
-        displacementPhysics:{speedX:0, speedY:0}
-    },
-    a: {
-        startAnimation: "sliding",
-        startEvent: "keydown",
-        startLoop: false,
-        endAnimation:"idle",
-        endEvent: "keyup",
-        endLoop: false,
-        displacementPhysics:{speedX:0, speedY:0}
-    },
-};
 
 /* RECORD DEL JUGADOR/ LOCAL STORAGE*/ 
 let tempProgress = 0
@@ -112,8 +86,6 @@ function actualizarPuntaje(nuevoPuntaje, recordContainer) {
 
 
 
-
-
 /* CREACION DE  ELEMENTOS DEL JUEGO  */
 
 //PLAYER
@@ -128,7 +100,6 @@ const player= new Character({
     isAutoOffAnimation: true,
 
     frameCoordinates: playerFrames,
-    controls: playerControls,
     universe: world, 
     width: 150, 
     height: 200,
@@ -138,6 +109,49 @@ const player= new Character({
 
 })
 
+
+
+//Controles para smartphones
+
+player.controls.btn={
+    
+        startAnimation:"jump-up",
+        startEvent: "touchstart",
+        startLoop: false,
+        endAnimation: "jump-fall",
+        endEvent: "touchend",
+        endLoop: false,
+        displacementPhysics:{speedX:0, speedY:-20},
+        addListenerToObject: jumpButton 
+}
+
+
+player.controls.btnRun={
+    
+    startAnimation:"run",
+    startEvent: "touchstart",
+    startLoop: true,
+    endAnimation: "idle",
+    endEvent: "touchend",
+    endLoop: true,
+    displacementPhysics:{speedX:0, speedY:0},
+    addListenerToObject: runButton
+    
+}
+
+
+player.controls.btnSliding={
+    
+    startAnimation:"sliding",
+    startEvent: "touchstart",
+    startLoop: true,
+    endAnimation: "idle",
+    endEvent: "touchend",
+    endLoop: true,
+    displacementPhysics:{speedX:18, speedY:0},
+    addListenerToObject: slidingButton
+    
+}
 
 
 
@@ -332,12 +346,12 @@ bgTrees.behaviorStack.push((request)=>{
     
     const player=request.universe.stackAnimations.filter(animation=>{
 
-        return animation.type=="player"
+        return animation.type =="player"
     })
 
     const bgTwo=request.universe.stackAnimations.find(animation=>{
 
-        return animation.nickName==="bgTwoThree"
+        return animation.nickName === "bgTwoThree"
     })
 
     if(player[0].animationName==="run"){
@@ -353,20 +367,14 @@ bgTrees.behaviorStack.push((request)=>{
         if(bgTwo.position.x < - 800){
             bgTwo.position.x = 800  + bgTwo.speedX
            
-            
         }
-
-        
-    }
-     
+ 
+    } 
     else{
 
         request.speedX=0;
         bgTwo.speedX=0;
-       
     }
-
-    
 }) 
 
 //Roca debajo
@@ -388,6 +396,7 @@ bgTrees.behaviorStack.push((request)=>{
         }
         
     }
+
      
 }) 
 
@@ -400,7 +409,9 @@ player.behaviorStack.push(request=>{
         presentation.classList.add("letreroToBottom")
         soundtrack.pause()
     }
+
 })
+
 
  
 /* MUSICA */
@@ -515,7 +526,6 @@ window.addEventListener('load', function() {
 /* INICIO DEL JUEGO */
 window.addEventListener("keydown", (e)=>{
 
-
     if(e.code=="Space"){
 
          if(presentation.classList.contains('letreroToBottom')){
@@ -539,7 +549,9 @@ window.addEventListener("keydown", (e)=>{
     
 })
 
-const spaceButton = document.getElementById("space")
+
+
+
 /* SMARTPHONES */
 
 spaceButton.addEventListener("click", (e)=>{

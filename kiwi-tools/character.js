@@ -63,7 +63,6 @@ export class Character {
         this.cancelEvent = cancelEvent;
         this.isAutoOffAnimation = isAutoOffAnimation;
         this.frameCoordinates = frameCoordinates;
-        this.controls = controls ||  undefined;
         this.universe = universe;
         this.frame = 0;
         this.hitBox = undefined;
@@ -74,6 +73,38 @@ export class Character {
         this.type = type;
         this.collisionActionStack = [];
         this.behaviorStack = [];
+        this.controls =  {
+
+            w: {
+                startAnimation:"jump-up",
+                startEvent: "keydown",
+                startLoop: false,
+                endAnimation: "jump-fall",
+                endEvent: "keyup",
+                endLoop: false,
+                displacementPhysics:{speedX:0, speedY:-20}
+            },
+            d: {
+                startAnimation:"run",
+                startEvent: "keydown",
+                startLoop: true,
+                endAnimation: "idle",
+                endEvent: "keyup",
+                endLoop: true,
+                displacementPhysics:{speedX:0, speedY:0}
+            },
+            a: {
+                startAnimation: "sliding",
+                startEvent: "keydown",
+                startLoop: false,
+                endAnimation:"idle",
+                endEvent: "keyup",
+                endLoop: false,
+                displacementPhysics:{speedX:18, speedY:0}
+            },
+        
+        };
+        
     }
 
     /**
@@ -110,4 +141,54 @@ export class Character {
         this.hitBox.x = spritePositionX + this.hitBox.positionX;
         this.hitBox.y = spritePositionY + this.hitBox.positionY;
     }
+
+    // pendiente por terminar
+    setupKeyControl(...config) {
+        try {
+          const [
+            key,
+            startAnimation,
+            startEvent,
+            startLoop,
+            endAnimation,
+            endEvent,
+            endLoop,
+            displacementPhysics,
+            addListenerToObject
+          ] = config;
+      
+          if (key === undefined) {
+            throw new Error("The key cannot be undefined");
+          }
+      
+          if (typeof startAnimation !== "string") {
+            throw new Error("startAnimation must be a string");
+          }
+      
+          if (typeof endAnimation !== "string") {
+            throw new Error("endAnimation must be a string");
+          }
+      
+          if (typeof startEvent !== "string") {
+            throw new Error("startEvent must be a string");
+          }
+      
+          if (typeof endEvent !== "string") {
+            throw new Error("endEvent must be a string");
+          }
+      
+          this.controls[key] = {
+            startAnimation,
+            startEvent,
+            startLoop,
+            endAnimation,
+            endEvent,
+            endLoop,
+            displacementPhysics: displacementPhysics || { speedX: 0, speedY: 0 },
+            addListenerToObject
+          };
+        } catch (error) {
+          console.error(error.message);
+        }
+      }
 }

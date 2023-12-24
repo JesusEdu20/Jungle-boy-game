@@ -121,7 +121,7 @@ player.controls.btn={
         endAnimation: "jump-fall",
         endEvent: "touchend",
         endLoop: false,
-        displacementPhysics:{speedX:0, speedY:-20},
+        displacementPhysics:{speedX:-2, speedY:-20},
         addListenerToObject: jumpButton 
 }
 
